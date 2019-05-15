@@ -28,17 +28,17 @@ function parse(input) {
   return results
 }
 
-function doAction(results, player, newLocation) {
-  if (results[1] == 'enter' && newLocation != null) {
+function doAction(action, player, newLocation) {
+  if (action == 'enter' && newLocation != null) {
     player.cameFrom = player.location;
     player.location = newLocation
     player.location.enter();
   }
-  if (results[1] == 'inspect') {
+  if (action == 'inspect') {
     console.log("Inspecting " + newLocation.name)
     newLocation.inspect(player)
   }
-  if (results[1] == 'go back') {
+  if (action == 'go back') {
     let destination = player.cameFrom;
     player.cameFrom = player.location;
     player.location = destination;
@@ -75,7 +75,7 @@ function keyDownHandler(e) {
         console.log(newLocation.descriptor);
       }
 
-      player = doAction(results, player, newLocation)
+      player = doAction(results[1], player, newLocation)
       console.log("Player location: " + player.location.name)
     } else {
       addLine("Time passes... You start feeling nervous.")
