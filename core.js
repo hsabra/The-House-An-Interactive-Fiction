@@ -4,22 +4,21 @@ var regexes = [
   /enter/,
   /go back/,
   /inspect/,
-  /eat/
 ]
 
 var actions = [
   function (action, player, object) {
     if (action == 'enter' && object != null) {
-      player.cameFrom = player.location;
-      player.location = object
-      player.location.enter();
+      player.move(object)
     }
+    return player;
   },
   function (action, player, object) {
     if (action == 'inspect') {
       console.log("Inspecting " + object.name)
       object.inspect(player)
     }
+    return player;
   },
   function (action, player, object) {
     if (action == 'go back') {
@@ -28,7 +27,8 @@ var actions = [
       player.location = destination;
       player.location.enter();
     }
-  }
+    return player;
+  },
 ]
 
 function parse(input) {
@@ -53,13 +53,18 @@ function parse(input) {
   return results
 }
 
-function addAction(action) {
-
+function addAction(actionName, actionFunction) {
+  console.log("Adding action...")
+  regexes.push(actionName);
+  actions.push(actionFunction);
+  for(i in regexes) {
+    console.log(regexes[i])
+  }
 }
 
 function doAction(action, player, newLocation) {
-  for(var i in actions) {
-    actions[i](action, player, newLocation);
+  for(i in actions) {
+    player = actions[i](action, player, newLocation);
   }
   return player
 }
@@ -126,7 +131,8 @@ class Room {
     }
   }
 
-  enter(mode) {
+  enter() {
+
     addLine("You find yourself in a " + this.name + ".")
 
     //Get contents of room
@@ -150,7 +156,7 @@ class Room {
   }
 
   inspect(player) {
-    if (this.descriptor && player.location == this) {
+    if (this.descriptor) {
       console.log("Printing description")
       addLine(this.descriptor);
     } else {
@@ -190,5 +196,11 @@ class Player {
   constructor(location) {
     this.location = location;
     this.cameFrom = null;
+  }
+
+  move(location) {
+    this.cameFrom = this.location
+    this.location = location;
+    this.location.enter();
   }
 }
