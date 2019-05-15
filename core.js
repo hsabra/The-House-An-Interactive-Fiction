@@ -4,6 +4,31 @@ var regexes = [
   /enter/,
   /go back/,
   /inspect/,
+  /eat/
+]
+
+var actions = [
+  function (action, player, object) {
+    if (action == 'enter' && object != null) {
+      player.cameFrom = player.location;
+      player.location = object
+      player.location.enter();
+    }
+  },
+  function (action, player, object) {
+    if (action == 'inspect') {
+      console.log("Inspecting " + object.name)
+      object.inspect(player)
+    }
+  },
+  function (action, player, object) {
+    if (action == 'go back') {
+      let destination = player.cameFrom;
+      player.cameFrom = player.location;
+      player.location = destination;
+      player.location.enter();
+    }
+  }
 ]
 
 function parse(input) {
@@ -28,21 +53,13 @@ function parse(input) {
   return results
 }
 
+function addAction(action) {
+
+}
+
 function doAction(action, player, newLocation) {
-  if (action == 'enter' && newLocation != null) {
-    player.cameFrom = player.location;
-    player.location = newLocation
-    player.location.enter();
-  }
-  if (action == 'inspect') {
-    console.log("Inspecting " + newLocation.name)
-    newLocation.inspect(player)
-  }
-  if (action == 'go back') {
-    let destination = player.cameFrom;
-    player.cameFrom = player.location;
-    player.location = destination;
-    player.location.enter();
+  for(var i in actions) {
+    actions[i](action, player, newLocation);
   }
   return player
 }
