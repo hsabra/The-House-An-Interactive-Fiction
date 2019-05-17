@@ -9,7 +9,11 @@ var regexes = [
 var actions = [
   function(action, player, object) {
     if (action == 'enter' && object != null) {
-      player.move(object)
+      destination = object.enter();
+      if(destination == null) {
+        destination = player.location;
+      }
+      player.move(destination)
     }
     return player;
   },

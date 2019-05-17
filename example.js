@@ -46,12 +46,15 @@ Item.prototype.eat = function() {
 
 //Add the function to the action list
 
+let door = new Door('door', 'It is a door');
 
+door.addItem(room);
 
 // Put them in their spots
 hallway.addItem(vase);
 hallway.addItem(room);
 hallway.addItem(key);
+hallway.addItem(door);
 room.addItem(bedroom);
 room.addItem(hallway);
 
